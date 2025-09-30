@@ -5,6 +5,7 @@ from atomic_habits.models import Habits
 from users.models import User
 from atomic_habits.paginators import CustomPagination
 from atomic_habits.serializers import HabitsSerializer
+from users.permissions import IsOwner
 
 
 class HabitsCreateAPIView(generics.CreateAPIView):
@@ -26,14 +27,16 @@ class HabitsListAPIView(generics.ListAPIView):
 
     serializer_class = HabitsSerializer
     pagination_class = CustomPagination
-    queryset = Habits.objects.all()
+    # queryset = Habits.objects.all()
 
-    # def get_queryset(self):
-    #     if Habits.is_published:
-    #         return Habits.objects.filter(owner=self.request.user)
-    # # def get_queryset(self):
-    # #     if Habits.objects.filter(owner=self.request.user) and Habits.is_published:
-    # #         return
+    def get_queryset(self):
+        """Пользователь видет свои и публичные привычки"""
+        user = self.request.user
+        user_habits = Habits.objects.filter(owner=user)
+        public_habits = Habits.objects.filter(is_published=True)
+
+        return user_habits | public_habits
+
 
 
 class HabitsRetrieveAPIView(generics.RetrieveAPIView):
@@ -41,7 +44,7 @@ class HabitsRetrieveAPIView(generics.RetrieveAPIView):
 
     serializer_class = HabitsSerializer
     queryset = Habits.objects.all()
-    # permission_classes =
+    permission_classes = (IsOwner,)
 
 
 class HabitsUpdateAPIView(generics.UpdateAPIView):
@@ -49,11 +52,11 @@ class HabitsUpdateAPIView(generics.UpdateAPIView):
 
     serializer_class = HabitsSerializer
     queryset = Habits.objects.all()
-    # permission_classes =
+    permission_classes = (IsOwner,)
 
 
 class HabitsDestroyAPIView(generics.DestroyAPIView):
     """Класс контроллера для удаления экземпляра привычки"""
 
     queryset = Habits.objects.all()
-    # permission_classes =
+    permission_classes = (IsOwner,)

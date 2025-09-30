@@ -14,6 +14,9 @@ class User(AbstractUser):
     city = models.CharField(
         blank=True, max_length=50, help_text="Введите страну проживания"
     )
+    tg_chat_id = models.CharField(
+        blank=True, max_length=50, verbose_name="Телеграм chat-id"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

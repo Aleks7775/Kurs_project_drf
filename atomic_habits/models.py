@@ -18,7 +18,8 @@ class Habits(models.Model):
     time = models.TimeField(verbose_name="Время выполнения")
     action = models.CharField(verbose_name="Действие привычки")
     reward_action = models.BooleanField(default=True, verbose_name="Признак приятной привычки")
-    addition_habit = models.CharField(verbose_name="Связанная привычка", blank=True, null=True)
+    addition_habit = models.ForeignKey("self", on_delete=models.SET_NULL, verbose_name="Связанная привычка",
+                                       blank=True, null=True)
     period = models.PositiveIntegerField(
         default=1, verbose_name="Число повторений в неделю"
     )
