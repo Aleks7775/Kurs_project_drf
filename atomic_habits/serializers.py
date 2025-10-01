@@ -7,6 +7,8 @@ from atomic_habits.validators import (validate_execution_time, validate_frequenc
 
 
 class HabitsSerializer(ModelSerializer):
+    """Класс сериализатора для модели привычки"""
+
     time = serializers.TimeField(validators=[validate_execution_time])
     period = serializers.IntegerField(validators=[validate_frequency])
 
