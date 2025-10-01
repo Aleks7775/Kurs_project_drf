@@ -2,10 +2,11 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from atomic_habits.models import Habits
-from atomic_habits.validators import validate_execution_time, validate_frequency, validate_pleasant_habit
+from atomic_habits.validators import (validate_execution_time, validate_frequency,
+                                      validate_pleasant_habit, validate_no_both_addition_and_award)
 
 
-class HabitsSerializer(serializers.ModelSerializer):
+class HabitsSerializer(ModelSerializer):
     time = serializers.TimeField(validators=[validate_execution_time])
     period = serializers.IntegerField(validators=[validate_frequency])
 
@@ -14,6 +15,10 @@ class HabitsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        addition_habit = attrs.get('addition_habit')
-        validate_pleasant_habit(addition_habit)
+        """Валидируем приятные привычки"""
+        validate_pleasant_habit(attrs)
+
+        """Валидируем отсутствие одновременного указания вознаграждения и связанной привычки"""
+        validate_no_both_addition_and_award(attrs)
+
         return attrs

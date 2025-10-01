@@ -1,6 +1,5 @@
-from django.shortcuts import render
 from rest_framework.generics import (CreateAPIView, ListAPIView, UpdateAPIView,
-                                     DestroyAPIView, get_object_or_404)
+                                     DestroyAPIView)
 from rest_framework.permissions import AllowAny
 
 from users.models import User
