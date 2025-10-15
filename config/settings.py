@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import sys
 
 from django.conf.global_settings import AUTH_USER_MODEL
 from dotenv import load_dotenv
