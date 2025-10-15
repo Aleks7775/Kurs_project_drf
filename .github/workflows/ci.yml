@@ -7,28 +7,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry config virtualenvs.create false
-          poetry install --no-root
-      - name: Run tests
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          DATABASE_USER: ${{ secrets.DATABASE_USER }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          HOST: ${{ secrets.HOST }}
-          PORT: ${{ secrets.PORT }}
-        run: |
-          python3 manage.py test
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        poetry config virtualenvs.create false
+        poetry install --no-root
+    - name: Run tests
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        HOST: ${{ secrets.HOST }}
+        PORT: ${{ secrets.PORT }}
+      run: |
+        python manage.py test
 
 
 
