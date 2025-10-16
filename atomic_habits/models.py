@@ -6,12 +6,8 @@ from users.models import User
 
 
 class Habits(models.Model):
-    owner = models.ForeignKey(User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Создатель привычки",
-    )
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                              verbose_name="Создатель привычки",)
     place = models.CharField(verbose_name="Место выполнения", blank=True, null=True)
 
     time = models.TimeField(verbose_name="Время выполнения")
