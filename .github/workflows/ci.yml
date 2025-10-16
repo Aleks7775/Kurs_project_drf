@@ -34,6 +34,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Check out code
@@ -54,38 +55,28 @@ jobs:
           docker compose build
           docker compose push
 
-#      - name: Build and push Docker images
-#        env:
-#          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-#          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-#          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#        run: |
-#          docker compose build
-#          docker compose push
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
-#  deploy:
-#    runs-on: ubuntu-latest
-#    needs: test
-#
-#    steps:
-#      - name: Set up SSH
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_KEY }}
-#
-#      - name: Copy project files to server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#          cd ${{ secrets.DEPLOY_DIR }}
-#          sudo apt-get update
-#          sudo apt-get install -y python3-venv python3-pip
-#          EOF
-#      - name: Install dependencies on server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            cd ${{ secrets.DEPLOY_DIR }}
-#            git pull
-#            docker-compose down
-#            docker-compose up -d --build
-#          EOF
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Copy project files to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ secrets.DEPLOY_DIR }}
+          sudo apt-get update
+          sudo apt-get install -y python3-venv python3-pip
+          EOF
+      - name: Install dependencies on server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            cd ${{ secrets.DEPLOY_DIR }}
+            git pull
+            docker-compose down
+            docker-compose up -d --build
+          EOF
