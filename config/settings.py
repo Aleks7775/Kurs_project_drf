@@ -1,12 +1,14 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import sys
 
-from django.conf.global_settings import AUTH_USER_MODEL
+# from django.conf.global_settings import AUTH_USER_MODEL
 from dotenv import load_dotenv
 
 load_dotenv()
 
+AUTH_USER_MODEL = "users.User"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -16,7 +18,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -118,7 +120,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -147,3 +148,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3'
+        }
+    }
